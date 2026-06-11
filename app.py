@@ -1,20 +1,19 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from flask import Flask, request, jsonify
 import random
 
-app = FastAPI()
+app = Flask(__name__)
 
-# ⭐️ 보내주신 카카오 챗봇의 퀴즈 블록 ID 5개 세팅 완료!
+# ⭐️ 카카오 챗봇 퀴즈 블록 ID 5개 세팅
 QUIZ_BLOCK_IDS = [
-    "6a178630a473984e628570b2",  # 1번째 주소 블록
-    "6a1786f534f90d922e3fe88f",  # 2번째 주소 블록
-    "6a17872470e65519fcd3dc7a",  # 3번째 주소 블록 (중복 제외)
-    "6a1787ce568d272d8eb10783",  # 4번째 주소 블록
-    "6a178a26a473984e62857169"   # 5번째 주소 블록
+    "6a178630a473984e628570b2",
+    "6a1786f534f90d922e3fe88f",
+    "6a17872470e65519fcd3dc7a",
+    "6a1787ce568d272d8eb10783",
+    "6a178a26a473984e62857169"
 ]
 
-@app.post("/api/random-quiz")
-async def redirect_to_random_quiz(request: Request):
+@app.route('/api/random-quiz', methods=['POST'])
+def redirect_to_random_quiz():
     # 5개의 블록 ID 중 하나를 랜덤으로 무작위 선택
     chosen_block_id = random.choice(QUIZ_BLOCK_IDS)
     
@@ -32,8 +31,7 @@ async def redirect_to_random_quiz(request: Request):
         }
     }
     
-    return JSONResponse(content=kakao_response)
+    return jsonify(kakao_response)
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    app.run(host="0.0.0.0", port=8000)
